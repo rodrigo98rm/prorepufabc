@@ -120,15 +120,14 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void insertUserOnDb(FirebaseUser fbUser, String email){
         Map<String, Object> user = new HashMap<>();
 
-        user.put("uid", fbUser.getUid());
         user.put("name", txtName.getText().toString().trim());
         user.put("email", email);
 
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        db.collection("users").document(fbUser.getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
@@ -142,6 +141,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+
     }
 
     private void updateProgressViews(boolean loading){
