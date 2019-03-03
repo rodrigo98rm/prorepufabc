@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "798784555192",
+    "firebase_url": "https://prorepufabc.firebaseio.com",
+    "project_id": "prorepufabc",
+    "storage_bucket": "prorepufabc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798784555192:android:fa037a13142633d1",
+        "android_client_info": {
+          "package_name": "mayer.rodrigo.prorepufabc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798784555192-p3ba2eses0kpaon8tfnpng5221235s3d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASuvK0sLXSuhdhbe8m0iPOM012QQgTQTI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
