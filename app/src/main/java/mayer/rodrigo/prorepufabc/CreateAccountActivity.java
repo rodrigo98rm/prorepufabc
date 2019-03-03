@@ -12,33 +12,44 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
     //Views
-    private EditText txtEmail, txtPassword;
+    private EditText txtName, txtEmail, txtPassword;
     private Button buttonSignup;
     private ProgressBar progressBar;
 
     private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
+        txtName = findViewById(R.id.editText_name_CreateAccount);
         txtEmail = findViewById(R.id.editText_email_CreateAccount);
         txtPassword = findViewById(R.id.editText_password_CreateAccount);
         buttonSignup = findViewById(R.id.button_signup_CreateAccount);
         progressBar = findViewById(R.id.progressBar_CreateAccount);
 
         auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         //Listeners
         buttonSignup.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +66,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         updateProgressViews(true);
 
-        String email = txtEmail.getText().toString().trim();
+        final String email = txtEmail.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
 
         if(email.isEmpty()){
@@ -76,10 +87,12 @@ public class CreateAccountActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    if(user != null){
+                        insertUserOnDb(user, email);
+                    }
                 }else{
 
                     try {
@@ -102,6 +115,33 @@ public class CreateAccountActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void insertUserOnDb(FirebaseUser fbUser, String email){
+        Map<String, Object> user = new HashMap<>();
+
+        user.put("uid", fbUser.getUid());
+        user.put("name", txtName.getText().toString().trim());
+        user.put("email", email);
+
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Ocorreu um erro",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void updateProgressViews(boolean loading){
