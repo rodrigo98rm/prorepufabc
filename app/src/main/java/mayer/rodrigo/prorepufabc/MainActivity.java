@@ -2,6 +2,7 @@ package mayer.rodrigo.prorepufabc;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import mayer.rodrigo.prorepufabc.Activities.ForgotPasswordActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     //Views
     private EditText txtEmail, txtPassword;
     private Button buttonLogin;
-    private TextView txtCreateAccount;
+    private TextView txtForgotPassword, txtCreateAccount;
     private ProgressBar progressBar;
 
     private FirebaseAuth auth;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.editText_email_Main);
         txtPassword = findViewById(R.id.editText_password_Main);
         buttonLogin = findViewById(R.id.button_login_Main);
+        txtForgotPassword = findViewById(R.id.textView_forgotPassword_Main);
         txtCreateAccount = findViewById(R.id.textView_createAccount_Main);
         progressBar = findViewById(R.id.progressBar_Main);
 
@@ -48,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
+            }
+        });
+
+        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
+                startActivity(intent);
             }
         });
 

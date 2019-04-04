@@ -4,6 +4,7 @@
     <color name="primaryLightColor">#489861</color>
     <color name="colorPrimaryDark">#003d0f</color>
     <color name="colorAccent">#fdcd01</color>
+    <color name="facebookBlue">#4267B2</color>
     <color name="secondaryLightColor">#ffff51</color>
     <color name="secondaryDarkColor">#c59d00</color>
     <color name="primaryTextColor">#ffffff</color>
