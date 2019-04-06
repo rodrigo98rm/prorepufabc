@@ -59,6 +59,8 @@ public class CreateAccountActivity extends AppCompatActivity {
             }
         });
 
+        setupActionBar();
+
 
     }
 
@@ -152,5 +154,10 @@ public class CreateAccountActivity extends AppCompatActivity {
             buttonSignup.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void setupActionBar(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.cadastro));
     }
 }

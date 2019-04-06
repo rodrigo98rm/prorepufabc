@@ -4,4 +4,5 @@
     <string name="email">Email</string>
     <string name="enviar">Enviar</string>
     <string name="recuperar_senha">Recuperar senha</string>
+    <string name="cadastro">Cadastro</string>
 </resources>
