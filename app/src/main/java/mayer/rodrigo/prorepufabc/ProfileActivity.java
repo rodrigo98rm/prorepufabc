@@ -73,6 +73,8 @@ public class ProfileActivity extends AppCompatActivity {
                 selectImageFromGallery();
             }
         });
+
+        getSupportActionBar().setTitle("Meu perfil");
     }
 
     @Override

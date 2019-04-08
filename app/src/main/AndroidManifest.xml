@@ -32,7 +32,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileActivity" android:parentActivityName=".Activities.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.SettingsActivity" />
+        </activity>
         <activity
             android:name=".CreateAccountActivity"
             android:parentActivityName=".MainActivity">
