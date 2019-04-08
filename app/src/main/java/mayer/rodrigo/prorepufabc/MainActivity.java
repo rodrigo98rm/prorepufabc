@@ -3,6 +3,7 @@ package mayer.rodrigo.prorepufabc;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import mayer.rodrigo.prorepufabc.Activities.ForgotPasswordActivity;
+import mayer.rodrigo.prorepufabc.Activities.HomeActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     startActivity(intent);
                     finish();
                 }else{
