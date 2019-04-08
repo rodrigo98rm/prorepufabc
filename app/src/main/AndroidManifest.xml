@@ -12,7 +12,19 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.HomeActivity" android:theme="@style/AppThemeNoActionBar"></activity>
+        <activity android:name=".Activities.MyReportsActivity" android:parentActivityName=".Activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.HomeActivity" />
+        </activity>
+        <activity android:name=".Activities.SettingsActivity" android:parentActivityName=".Activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.HomeActivity"
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".Activities.ForgotPasswordActivity"
             android:parentActivityName=".MainActivity">
