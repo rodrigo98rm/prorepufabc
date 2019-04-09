@@ -12,12 +12,21 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MyReportsActivity" android:parentActivityName=".Activities.HomeActivity">
+        <activity android:name=".Activities.NewReportActivity" android:parentActivityName=".Activities.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.HomeActivity" />
         </activity>
-        <activity android:name=".Activities.SettingsActivity" android:parentActivityName=".Activities.HomeActivity">
+        <activity
+            android:name=".Activities.MyReportsActivity"
+            android:parentActivityName=".Activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:parentActivityName=".Activities.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.HomeActivity" />
@@ -32,7 +41,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".ProfileActivity" android:parentActivityName=".Activities.SettingsActivity">
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".Activities.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.SettingsActivity" />
