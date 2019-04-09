@@ -34,7 +34,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Views
     private TextView txtName, txtEmail;
-    private Button buttonLogout;
     private CircularImageView imageViewprofilePic;
     private ProgressBar progressBar;
 
@@ -56,17 +55,10 @@ public class ProfileActivity extends AppCompatActivity {
         //Views
         txtName = findViewById(R.id.textView_name_Home);
         txtEmail = findViewById(R.id.textView_email_Home);
-        buttonLogout = findViewById(R.id.button_logout_Home);
         imageViewprofilePic = findViewById(R.id.imageView_profilePic_Home);
         progressBar = findViewById(R.id.progressBar_Home);
 
         //Listeners
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logout();
-            }
-        });
         imageViewprofilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
