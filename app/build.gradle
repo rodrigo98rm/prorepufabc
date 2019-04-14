@@ -11,9 +11,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug{
+            resValue 'string', "maps_sdk_key", UfabcProrep_MapsSdkKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue 'string', "maps_sdk_key", UfabcProrep_MapsSdkKey
         }
     }
 }
