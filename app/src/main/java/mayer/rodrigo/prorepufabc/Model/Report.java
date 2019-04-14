@@ -9,6 +9,7 @@ public class Report {
 
 
     public Report(User user, String title, String description, int upvotes, long timestamp) {
+        this.user = user;
         this.title = title;
         this.description = description;
         this.upvotes = upvotes;

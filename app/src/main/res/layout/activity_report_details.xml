@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <TextView
             android:id="@+id/textView_title_Details"
             android:layout_width="0dp"
@@ -29,7 +28,7 @@
             tools:text="Bebedouro quebrado" />
 
         <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/circularImageView"
+            android:id="@+id/circularImageView_userImg_Details"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
@@ -43,12 +42,13 @@
         <TextView
             android:id="@+id/textView_user_Details"
             android:layout_width="wrap_content"
-            android:layout_height="19dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/circularImageView"
-            app:layout_constraintStart_toEndOf="@+id/circularImageView"
-            app:layout_constraintTop_toTopOf="@+id/circularImageView"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/circularImageView_userImg_Details"
+            app:layout_constraintStart_toEndOf="@+id/circularImageView_userImg_Details"
+            app:layout_constraintTop_toTopOf="@+id/circularImageView_userImg_Details"
             tools:text="Rodrigo Rominho Mayer" />
 
         <TextView
@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_user_Details"
             app:layout_constraintStart_toEndOf="@+id/textView_user_Details"
             app:layout_constraintTop_toTopOf="@+id/textView_user_Details"
@@ -69,7 +70,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             app:cardBackgroundColor="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="@+id/circularImageView"
+            app:layout_constraintBottom_toBottomOf="@+id/circularImageView_userImg_Details"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView_title_Details">
 
@@ -109,10 +110,11 @@
             android:layout_marginRight="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/circularImageView"
+            app:layout_constraintTop_toBottomOf="@+id/circularImageView_userImg_Details"
             tools:text="Zyhys onoso jehikagon Aeksiot epi, se gis hen syndrorro jemagon. Avy jorraelan. Skorī demalyti tymptir tymis, erinis ia morghulis. Valor dohaeris." />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
@@ -184,6 +186,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="72dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton"
