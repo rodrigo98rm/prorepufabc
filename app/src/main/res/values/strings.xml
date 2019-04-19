@@ -5,4 +5,7 @@
     <string name="enviar">Enviar</string>
     <string name="recuperar_senha">Recuperar senha</string>
     <string name="cadastro">Cadastro</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
