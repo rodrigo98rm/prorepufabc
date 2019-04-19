@@ -2,14 +2,11 @@ package mayer.rodrigo.prorepufabc.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
-import mayer.rodrigo.prorepufabc.PagerAdapter;
-import mayer.rodrigo.prorepufabc.ProfileActivity;
+import mayer.rodrigo.prorepufabc.Adapters.PagerAdapter;
 import mayer.rodrigo.prorepufabc.R;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;

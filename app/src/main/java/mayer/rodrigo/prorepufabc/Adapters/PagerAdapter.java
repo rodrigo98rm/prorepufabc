@@ -1,4 +1,4 @@
-package mayer.rodrigo.prorepufabc;
+package mayer.rodrigo.prorepufabc.Adapters;
 
 import android.os.Bundle;
 
@@ -33,9 +33,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 fragment1.setArguments(bundle);
                 return fragment1;
         }
-
-
-
     }
 
     @Override
