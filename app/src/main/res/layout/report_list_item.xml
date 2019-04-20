@@ -6,15 +6,141 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/textView_name_ReportItem"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_reportCard_ReportItem"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Bebedouro" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <GridView
+                android:id="@+id/gridView_photos_ReportItem"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:gravity="center"
+                android:horizontalSpacing="0dp"
+                android:numColumns="2"
+                android:stretchMode="columnWidth"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </GridView>
+
+            <TextView
+                android:id="@+id/textView_title_ReportItem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/cardView_upvotes_ReportItem"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gridView_photos_ReportItem"
+                tools:text="Bebedouro" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/circularImageView_userImg_ReportItem"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                app:civ_border_width="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_title_ReportItem"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/textView_user_ReportItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/circularImageView_userImg_ReportItem"
+                app:layout_constraintStart_toEndOf="@+id/circularImageView_userImg_ReportItem"
+                app:layout_constraintTop_toTopOf="@+id/circularImageView_userImg_ReportItem"
+                tools:text="Rodrigo Rominho Mayer" />
+
+            <TextView
+                android:id="@+id/textView_date_ReportItem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_user_ReportItem"
+                app:layout_constraintEnd_toStartOf="@+id/cardView_upvotes_ReportItem"
+                app:layout_constraintStart_toEndOf="@+id/textView_user_ReportItem"
+                app:layout_constraintTop_toTopOf="@+id/textView_user_ReportItem"
+                tools:text="• 14/04/2019" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_upvotes_ReportItem"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gridView_photos_ReportItem">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_up_arrow"
+                        android:tint="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/textView_upvotes_ReportItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        tools:text="1345" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/view_clickableBox_ReportItem"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

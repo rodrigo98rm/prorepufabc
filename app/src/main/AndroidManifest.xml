@@ -42,6 +42,7 @@
         </activity>
         <activity
             android:name=".Activities.HomeActivity"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".Activities.ForgotPasswordActivity"

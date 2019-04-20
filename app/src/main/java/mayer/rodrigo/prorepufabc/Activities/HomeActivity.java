@@ -65,8 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         fabNewReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(getApplicationContext(), NewReportActivity.class);
-                Intent intent = new Intent(getApplicationContext(), ReportDetailsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), NewReportActivity.class);
                 startActivity(intent);
             }
         });
