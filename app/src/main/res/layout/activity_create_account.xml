@@ -58,7 +58,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editText_email_CreateAccount" />
 
     <EditText
-        android:id="@+id/editText_password_CreateAccount2"
+        android:id="@+id/editText_confirmPassword_CreateAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -90,7 +90,7 @@
         android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_password_CreateAccount2" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_confirmPassword_CreateAccount" />
 
     <ProgressBar
         android:id="@+id/progressBar_CreateAccount"

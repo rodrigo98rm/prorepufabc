@@ -2,6 +2,7 @@ package mayer.rodrigo.prorepufabc;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import mayer.rodrigo.prorepufabc.Activities.HomeActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -29,7 +31,7 @@ import java.util.Map;
 public class CreateAccountActivity extends AppCompatActivity {
 
     //Views
-    private EditText txtName, txtEmail, txtPassword;
+    private EditText txtName, txtEmail, txtPassword, txtConfirmPassword;
     private Button buttonSignup;
     private ProgressBar progressBar;
 
@@ -44,6 +46,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         txtName = findViewById(R.id.editText_name_CreateAccount);
         txtEmail = findViewById(R.id.editText_email_CreateAccount);
         txtPassword = findViewById(R.id.editText_password_CreateAccount);
+        txtConfirmPassword = findViewById(R.id.editText_confirmPassword_CreateAccount);
         buttonSignup = findViewById(R.id.button_signup_CreateAccount);
         progressBar = findViewById(R.id.progressBar_CreateAccount);
 
@@ -59,8 +62,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
 
         setupActionBar();
-
-
     }
 
     private void signup(){
@@ -69,20 +70,27 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         final String email = txtEmail.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
+        String passwordConfirmation = txtConfirmPassword.getText().toString().trim();
 
         if(email.isEmpty()){
-            Toast.makeText(getApplicationContext(), "Preencha o email",
-                    Toast.LENGTH_SHORT).show();
+            Snackbar.make(txtPassword, "Preencha o email", Snackbar.LENGTH_LONG).show();
             updateProgressViews(false);
             return;
         }
 
         if(password.isEmpty()){
-            Toast.makeText(getApplicationContext(), "Preencha a senha",
-                    Toast.LENGTH_SHORT).show();
+            Snackbar.make(txtPassword, "Preencha a senha", Snackbar.LENGTH_LONG).show();
             updateProgressViews(false);
             return;
         }
+
+        if(!password.equals(passwordConfirmation)){
+            Snackbar.make(txtPassword, "As senhas não correspondem", Snackbar.LENGTH_LONG).show();
+            updateProgressViews(false);
+            return;
+        }
+
+
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -129,7 +137,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
