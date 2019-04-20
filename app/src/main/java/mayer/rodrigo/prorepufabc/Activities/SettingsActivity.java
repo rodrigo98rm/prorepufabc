@@ -1,11 +1,13 @@
 package mayer.rodrigo.prorepufabc.Activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import mayer.rodrigo.prorepufabc.BuildConfig;
 import mayer.rodrigo.prorepufabc.MainActivity;
 import mayer.rodrigo.prorepufabc.ProfileActivity;
 import mayer.rodrigo.prorepufabc.R;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -56,10 +58,25 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void logout(){
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this, R.style.CustomAlertDialogTheme);
+        builder.setMessage("Fazer logout?")
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        builder.create().show();
     }
 
 }
