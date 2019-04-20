@@ -7,6 +7,7 @@ import mayer.rodrigo.prorepufabc.Model.User;
 import mayer.rodrigo.prorepufabc.R;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -66,7 +67,23 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void fillUpViews(){
+
+        getSupportActionBar().setTitle("Detalhes");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //TODO: Get Report from Cloud Firestore
         User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
         ArrayList<String> photosUrls = new ArrayList<>();
