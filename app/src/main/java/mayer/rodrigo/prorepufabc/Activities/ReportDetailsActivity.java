@@ -87,9 +87,9 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         //TODO: Get Report from Cloud Firestore
         User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
         ArrayList<String> photosUrls = new ArrayList<>();
-        photosUrls.add("https://images.unsplash.com/photo-1553075712-453f7213c24f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80");
-        photosUrls.add("https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
-        Report report = new Report(user, "Bebedouro quebrado", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 1345, 1555268610000L, photosUrls);
+        photosUrls.add("https://i.imgur.com/Ls8jpOi.jpg");
+        photosUrls.add("https://i.imgur.com/sVqliwH.jpg");
+        Report report = new Report(user, "Bebedouro quebrado", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 15, 1555268610000L, new ArrayList<>(photosUrls));
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
 
