@@ -59,14 +59,14 @@ public class ReportsListFragment extends Fragment {
         if(type == RECENTS){
             User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
             ArrayList<String> photosUrls = new ArrayList<>();
-            photosUrls.add("https://i.imgur.com/Ls8jpOi.jpg");
-            photosUrls.add("https://i.imgur.com/sVqliwH.jpg");
+            photosUrls.add("https://i.imgur.com/Ls8jpOim.jpg");
+            photosUrls.add("https://i.imgur.com/sVqliwHm.jpg");
             Report report = new Report(user, "Bebedouro quebrado", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 15, 1555268610000L, new ArrayList<>(photosUrls));
             reports.add(report);
 
             photosUrls.clear();
-            photosUrls.add("https://i.imgur.com/iEDJJkr.jpg");
-            photosUrls.add("https://i.imgur.com/iEDJJkr.jpg");
+            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
+            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
             report = new Report(user, "Saída de emergência danificada", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 1345, 1555268610000L, new ArrayList<>(photosUrls));
             reports.add(report);
 
@@ -74,22 +74,22 @@ public class ReportsListFragment extends Fragment {
             User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
             ArrayList<String> photosUrls = new ArrayList<>();
 
-            photosUrls.add("https://i.imgur.com/iEDJJkr.jpg");
-            photosUrls.add("https://i.imgur.com/iEDJJkr.jpg");
+            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
+            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
             Report report = new Report(user, "Saída de emergência danificada", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 1345, 1555268610000L, new ArrayList<>(photosUrls));
             reports.add(report);
 
             photosUrls.clear();
-            photosUrls.add("https://i.imgur.com/Ls8jpOi.jpg");
-            photosUrls.add("https://i.imgur.com/sVqliwH.jpg");
+            photosUrls.add("https://i.imgur.com/Ls8jpOim.jpg");
+            photosUrls.add("https://i.imgur.com/sVqliwHm.jpg");
             report = new Report(user, "Bebedouro quebrado", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 15, 1555268610000L, new ArrayList<>(photosUrls));
             reports.add(report);
         }else if(type == USER){
 
             User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
             ArrayList<String> photosUrls = new ArrayList<>();
-            photosUrls.add("https://i.imgur.com/DJiE2pE.jpg");
-            photosUrls.add("https://i.imgur.com/dG1K9JZ.jpg");
+            photosUrls.add("https://i.imgur.com/DJiE2pEm.jpg");
+            photosUrls.add("https://i.imgur.com/dG1K9JZm.jpg");
             Report report = new Report(user, "Goteiras no piso vermelho", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 0, 1555268610000L, new ArrayList<>(photosUrls));
             reports.add(report);
         }
