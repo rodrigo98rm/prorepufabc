@@ -1,11 +1,16 @@
-package mayer.rodrigo.prorepufabc;
+package mayer.rodrigo.prorepufabc.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import mayer.rodrigo.prorepufabc.MainActivity;
+import mayer.rodrigo.prorepufabc.R;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +32,8 @@ import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
                            DocumentSnapshot data = task.getResult();
                            txtName.setText(data.getString("name"));
                            txtEmail.setText(data.getString("email"));
-                           Picasso.with(getApplicationContext()).load(data.getString("imgUrl")).placeholder(R.drawable.ufabc).into(imageViewprofilePic);
+                           Picasso.with(getApplicationContext()).load(data.getString("imgUrl")).error(R.drawable.ufabc).into(imageViewprofilePic);
                        }
                    }
                });
@@ -129,10 +136,37 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void uploadImage(Uri imageUri){
 
-        String fileName = uid + ".jpg";
+        String fileName = uid;
         final StorageReference storageRef = storage.getReference().child("images").child(fileName);
 
-        UploadTask uploadTask = storageRef.putFile(imageUri);
+        Bitmap image = null;
+        try {
+            image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        //Reduce image dimensions
+        Bitmap newImage = Bitmap.createScaledBitmap(image, image.getWidth()/3, image.getHeight()/3, true);
+
+        //Reduce image quality
+        newImage.compress(Bitmap.CompressFormat.JPEG, 35, byteArrayOutputStream);
+
+        //Upload to Storage
+        UploadTask uploadTask = storageRef.putBytes(byteArrayOutputStream.toByteArray());
+
+        //Use this to upload full size image
+        //UploadTask uploadTask = storageRef.putFile(imageUri);
+
+        newImage.recycle();
+
+        try {
+            byteArrayOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -147,7 +181,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
 
                         //Update imageview with new url
-                        Picasso.with(getApplicationContext()).load(uri).placeholder(R.drawable.ufabc).into(imageViewprofilePic);
+                        Picasso.with(getApplicationContext()).load(uri).error(R.drawable.ufabc).into(imageViewprofilePic);
 
                         //Save new img url to db
                         Map<String, Object> user = new HashMap<>();

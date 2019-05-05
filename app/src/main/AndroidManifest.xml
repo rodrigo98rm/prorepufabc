@@ -52,7 +52,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".ProfileActivity"
+            android:name=".Activities.ProfileActivity"
             android:parentActivityName=".Activities.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

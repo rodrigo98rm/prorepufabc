@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import mayer.rodrigo.prorepufabc.BuildConfig;
 import mayer.rodrigo.prorepufabc.MainActivity;
-import mayer.rodrigo.prorepufabc.ProfileActivity;
 import mayer.rodrigo.prorepufabc.R;
 
 import android.content.DialogInterface;
