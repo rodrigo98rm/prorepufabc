@@ -1,15 +1,22 @@
 package mayer.rodrigo.prorepufabc.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import mayer.rodrigo.prorepufabc.BuildConfig;
 import mayer.rodrigo.prorepufabc.MainActivity;
 import mayer.rodrigo.prorepufabc.R;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -33,11 +40,16 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private final int REQUEST_IMAGE_CAPTURE = 1, REQUEST_IMAGE_FROM_GALLERY = 2;
 
     //Views
     private TextView txtName, txtEmail;
@@ -49,6 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseStorage storage;
 
     private String uid;
+    private Uri currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +82,22 @@ public class ProfileActivity extends AppCompatActivity {
         imageViewprofilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImageFromGallery();
+
+                new AlertDialog.Builder(ProfileActivity.this, R.style.CustomAlertDialogTheme)
+                        .setTitle("Foto de Perfil")
+                        .setMessage("Tirar foto ou escolher da galeria?")
+                        .setPositiveButton("Tirar foto", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                takePicture();
+                            }
+                        })
+                        .setNegativeButton("Galeria de fotos", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                selectImageFromGallery();
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -115,7 +143,28 @@ public class ProfileActivity extends AppCompatActivity {
         Intent chooserIntent = Intent.createChooser(getIntent, "Selecione uma imagem de perfil");
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
 
-        startActivityForResult(chooserIntent, 1);
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_FROM_GALLERY);
+    }
+
+    private void takePicture(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                currentPhotoPath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoPath);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
     }
 
     @Override
@@ -123,28 +172,49 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
 
-            if (requestCode == 1 && data != null && data.getData() != null) {
+            if (requestCode == REQUEST_IMAGE_FROM_GALLERY && data != null && data.getData() != null) {
 
-                // currImageURI is the global variable I'm using to hold the content:// URI of the image
                 Uri imageUri = data.getData();
 
-                uploadImage(imageUri);
-
+                uploadImage(getBitmapFromUri(imageUri));
             }
+
+            if(requestCode == REQUEST_IMAGE_CAPTURE){
+                uploadImage(getBitmapFromUri(currentPhotoPath));
+            }
+
         }
     }
 
-    private void uploadImage(Uri imageUri){
-
-        String fileName = uid;
-        final StorageReference storageRef = storage.getReference().child("images").child(fileName);
-
+    private Bitmap getBitmapFromUri(Uri imageUri){
         Bitmap image = null;
         try {
             image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return image;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        return image;
+    }
+
+    private void uploadImage(Bitmap image){
+
+        String fileName = uid;
+        final StorageReference storageRef = storage.getReference().child("images").child(fileName);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -160,6 +230,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Use this to upload full size image
         //UploadTask uploadTask = storageRef.putFile(imageUri);
 
+        image.recycle();
         newImage.recycle();
 
         try {
