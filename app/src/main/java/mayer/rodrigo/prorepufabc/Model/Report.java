@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Report {
 
+    private String id;
     private User user;
     private String title, description;
     private int upvotes;
@@ -21,6 +22,14 @@ public class Report {
         this.upvotes = upvotes;
         this.timestamp = timestamp;
         this.imgs = imgs;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setUser(User user) {

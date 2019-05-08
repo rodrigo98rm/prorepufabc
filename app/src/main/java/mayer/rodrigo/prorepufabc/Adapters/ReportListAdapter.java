@@ -50,7 +50,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ReportListAdapter.ViewHolder holder, int position) {
-        Report report = reports.get(position);
+        final Report report = reports.get(position);
 
         //Views
         View clickableBox;
@@ -81,6 +81,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, ReportDetailsActivity.class);
+                intent.putExtra(ReportDetailsActivity.EXTRA_REPORT_ID, report.getId());
                 context.startActivity(intent);
             }
         });

@@ -93,6 +93,7 @@ public class ReportsListFragment extends Fragment {
                                         User user = task.getResult().toObject(User.class);
 
                                         Report report = document.toObject(Report.class);
+                                        report.setId(document.getId());
                                         report.setUser(user);
                                         reports.add(report);
                                         adapter.notifyDataSetChanged();
@@ -123,6 +124,7 @@ public class ReportsListFragment extends Fragment {
                                         User user = task.getResult().toObject(User.class);
 
                                         Report report = document.toObject(Report.class);
+                                        report.setId(document.getId());
                                         report.setUser(user);
                                         reports.add(report);
                                         adapter.notifyDataSetChanged();
@@ -153,6 +155,7 @@ public class ReportsListFragment extends Fragment {
                                         User user = task.getResult().toObject(User.class);
 
                                         Report report = document.toObject(Report.class);
+                                        report.setId(document.getId());
                                         report.setUser(user);
                                         reports.add(report);
                                         adapter.notifyDataSetChanged();
