@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,11 +52,13 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
     private CircularImageView imgUser;
     private GridView photosGrid;
     private CheckBox cbSolved;
+    private FloatingActionButton fabUpvote;
 
     private GoogleMap googleMap;
     private double lat, lng;
     private String reportId;
     private ArrayList<String> resolvedUsers = new ArrayList<>();
+    private int upvotes;
     private Report report;
 
     private FirebaseFirestore db;
@@ -80,6 +83,7 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         imgUser = findViewById(R.id.circularImageView_userImg_Details);
         photosGrid = findViewById(R.id.gridView_photos_Details);
         cbSolved = findViewById(R.id.checkBox_solved_Details);
+        fabUpvote = findViewById(R.id.floatingActionButton_upvote_Details);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -107,6 +111,17 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
 
                 db.collection("reports").document(reportId).set(data, SetOptions.merge());
                 showResolvidoLayout();
+            }
+        });
+
+        fabUpvote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("upvotes", ++upvotes);
+
+                db.collection("reports").document(reportId).set(data, SetOptions.merge());
+                txtUpvotes.setText(String.valueOf(upvotes));
             }
         });
 
@@ -205,7 +220,8 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
                                         txtTitle.setText(report.getTitle());
                                         txtUserName.setText(report.getUser().getName());
                                         txtDate.setText("• " + formatter.format(new Date(report.getTimestamp())));
-                                        txtUpvotes.setText(String.valueOf(report.getUpvotes()));
+                                        upvotes = report.getUpvotes();
+                                        txtUpvotes.setText(String.valueOf(upvotes));
                                         txtDescription.setText(report.getDescription());
                                         Picasso.with(getApplicationContext()).load(report.getUser().getImgUrl()).into(imgUser);
 
