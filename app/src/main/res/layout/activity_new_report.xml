@@ -88,7 +88,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/button_addPicture_NewReport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/button_addLocation_NewReport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -199,6 +199,7 @@
                         app:srcCompat="@drawable/il_map" />
 
                     <TextView
+                        android:id="@+id/textView_locationMessage_NewReport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Localização não adicionada" />
