@@ -19,6 +19,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
@@ -136,7 +140,7 @@ public class NewReportActivity extends AppCompatActivity {
 
     private void saveReportToDb() {
 
-        Map<String, Object> report = new HashMap<>();
+        final Map<String, Object> report = new HashMap<>();
 
         report.put("user_id", auth.getCurrentUser().getUid());
         report.put("title", txtTitle.getEditText().getText().toString().trim());
@@ -159,6 +163,9 @@ public class NewReportActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+
+                        sendEmail(report);
+
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
@@ -173,6 +180,30 @@ public class NewReportActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void sendEmail(Map<String, Object> report){
+
+        String baseUrl = "https://us-central1-prorepufabc.cloudfunctions.net/sendMail";
+
+        AndroidNetworking.get(baseUrl)
+                .addQueryParameter("dest", "mayerrodrigo98@gmail.com")
+                .addQueryParameter("title", (String) report.get("title"))
+                .addQueryParameter("description", (String) report.get("description"))
+                .addQueryParameter("latitude", String.valueOf(report.get("latitude")))
+                .addQueryParameter("longitude", String.valueOf(report.get("longitude")))
+                .setPriority(Priority.HIGH)
+                .build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+
+            @Override
+            public void onError(ANError anError) {
+
+            }
+        });
     }
 
 }
