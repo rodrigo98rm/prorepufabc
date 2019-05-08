@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,15 +27,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReportDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -44,11 +50,16 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
     private LinearLayout layoutResolvido;
     private CircularImageView imgUser;
     private GridView photosGrid;
+    private CheckBox cbSolved;
 
     private GoogleMap googleMap;
     private double lat, lng;
+    private String reportId;
+    private ArrayList<String> resolvedUsers = new ArrayList<>();
+    private Report report;
 
     private FirebaseFirestore db;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,7 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         setContentView(R.layout.activity_report_details);
 
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         //Views
         txtTitle = findViewById(R.id.textView_title_Details);
@@ -67,12 +79,37 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         txtDescription = findViewById(R.id.textView_description_Details);
         imgUser = findViewById(R.id.circularImageView_userImg_Details);
         photosGrid = findViewById(R.id.gridView_photos_Details);
+        cbSolved = findViewById(R.id.checkBox_solved_Details);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         fillUpViews();
+
+        //Listeners
+        cbSolved.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                String userId = auth.getCurrentUser().getUid();
+
+                if(b){  //Add user id to array
+                    if(!resolvedUsers.contains(userId)){
+                        resolvedUsers.add(userId);
+                    }
+                }else{  //Remove user id from array
+                    resolvedUsers.remove(userId);
+                }
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("resolvedUsers", resolvedUsers);
+
+                db.collection("reports").document(reportId).set(data, SetOptions.merge());
+                showResolvidoLayout();
+            }
+        });
+
     }
 
     @Override
@@ -109,13 +146,34 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         return super.onOptionsItemSelected(item);
     }
 
+    private void showResolvidoLayout(){
+
+        if(report.getResolvedUsers() != null){
+            if(report.getResolvedUsers().size() > 0){
+
+                resolvedUsers = report.getResolvedUsers();
+
+                if(resolvedUsers.contains(auth.getCurrentUser().getUid())){
+                    cbSolved.setChecked(true);
+                }
+
+                layoutResolvido.setVisibility(View.VISIBLE);
+                txtResolvido.setText(report.getResolvedUsers().size() + " pessoas marcaram este problema como resolvido");
+                return;
+            }
+        }
+
+        layoutResolvido.setVisibility(View.GONE);
+
+    }
+
     private void fillUpViews(){
 
         getSupportActionBar().setTitle("Detalhes");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent incoming = getIntent();
-        String reportId = incoming.getStringExtra(EXTRA_REPORT_ID);
+        reportId = incoming.getStringExtra(EXTRA_REPORT_ID);
 
         db.collection("reports").document(reportId)
                 .get()
@@ -135,7 +193,7 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
                                     if(task.isSuccessful()){
                                         User user = task.getResult().toObject(User.class);
 
-                                        Report report = document.toObject(Report.class);
+                                        report = document.toObject(Report.class);
                                         report.setId(document.getId());
                                         report.setUser(user);
 
@@ -151,12 +209,7 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
                                         txtDescription.setText(report.getDescription());
                                         Picasso.with(getApplicationContext()).load(report.getUser().getImgUrl()).into(imgUser);
 
-                                        if(report.getResolvedUsers() != null){
-                                            if(report.getResolvedUsers().size() > 0){
-                                                layoutResolvido.setVisibility(View.VISIBLE);
-                                                txtResolvido.setText(report.getResolvedUsers().size() + " pessoas marcaram este problema como resolvido");
-                                            }
-                                        }
+                                        showResolvidoLayout();
 
                                         //Photos Grid View
                                         ReportPhotosAdapter photosAdapter = new ReportPhotosAdapter(report.getImgs(), getApplicationContext());
