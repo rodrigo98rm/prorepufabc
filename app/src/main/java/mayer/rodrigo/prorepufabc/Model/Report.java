@@ -10,18 +10,11 @@ public class Report {
     private int upvotes;
     private long timestamp;
     private ArrayList<String> imgs;
+    private ArrayList<String> resolvedUsers;
+    private double latitude, longitude;
 
-    public Report(){
+    public Report() {
 
-    }
-
-    public Report(User user, String title, String description, int upvotes, long timestamp, ArrayList<String> imgs) {
-        this.user = user;
-        this.title = title;
-        this.description = description;
-        this.upvotes = upvotes;
-        this.timestamp = timestamp;
-        this.imgs = imgs;
     }
 
     public String getId() {
@@ -56,7 +49,19 @@ public class Report {
         return timestamp;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     public ArrayList<String> getImgs() {
         return imgs;
+    }
+
+    public ArrayList<String> getResolvedUsers() {
+        return resolvedUsers;
     }
 }

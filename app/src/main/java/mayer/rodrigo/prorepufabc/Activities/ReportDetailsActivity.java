@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -38,9 +40,13 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
     public static final String EXTRA_REPORT_ID = "report_id";
 
     //Views
-    private TextView txtTitle, txtUserName, txtDate, txtUpvotes, txtDescription;
+    private TextView txtTitle, txtUserName, txtDate, txtUpvotes, txtDescription, txtResolvido;
+    private LinearLayout layoutResolvido;
     private CircularImageView imgUser;
     private GridView photosGrid;
+
+    private GoogleMap googleMap;
+    private double lat, lng;
 
     private FirebaseFirestore db;
 
@@ -56,6 +62,8 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         txtUserName = findViewById(R.id.textView_user_Details);
         txtDate = findViewById(R.id.textView_date_Details);
         txtUpvotes = findViewById(R.id.textView_upvotes_Details);
+        txtResolvido = findViewById(R.id.textView_resolvido_ReportDetails);
+        layoutResolvido = findViewById(R.id.linearLayout_resolvido_ReportDetails);
         txtDescription = findViewById(R.id.textView_description_Details);
         imgUser = findViewById(R.id.circularImageView_userImg_Details);
         photosGrid = findViewById(R.id.gridView_photos_Details);
@@ -70,15 +78,23 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        this.googleMap = googleMap;
+
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setZoomGesturesEnabled(false);
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
 
+//        moveMap();
+    }
 
-        LatLng sydney = new LatLng(-23.645296, -46.527828);
-        googleMap.addMarker(new MarkerOptions().position(sydney)
-                .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18));
+    private void moveMap(){
+
+        if(googleMap != null && lat != 0 && lng != 0){
+
+            LatLng location = new LatLng(lat, lng);
+            googleMap.addMarker(new MarkerOptions().position(location));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
+        }
     }
 
     @Override
@@ -123,6 +139,9 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
                                         report.setId(document.getId());
                                         report.setUser(user);
 
+                                        lat = report.getLatitude();
+                                        lng = report.getLongitude();
+
                                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY");
 
                                         txtTitle.setText(report.getTitle());
@@ -132,9 +151,18 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
                                         txtDescription.setText(report.getDescription());
                                         Picasso.with(getApplicationContext()).load(report.getUser().getImgUrl()).into(imgUser);
 
+                                        if(report.getResolvedUsers() != null){
+                                            if(report.getResolvedUsers().size() > 0){
+                                                layoutResolvido.setVisibility(View.VISIBLE);
+                                                txtResolvido.setText(report.getResolvedUsers().size() + " pessoas marcaram este problema como resolvido");
+                                            }
+                                        }
+
                                         //Photos Grid View
                                         ReportPhotosAdapter photosAdapter = new ReportPhotosAdapter(report.getImgs(), getApplicationContext());
                                         photosGrid.setAdapter(photosAdapter);
+
+                                        moveMap();
                                     }
                                 }
                             });

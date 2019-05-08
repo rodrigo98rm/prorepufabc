@@ -91,10 +91,14 @@ public class NewReportActivity extends AppCompatActivity {
         report.put("description", txtDescription.getEditText().getText().toString().trim());
         report.put("upvotes", 0);
         report.put("timestamp", new Date().getTime());
+        report.put("latitude", -23.645296);
+        report.put("longitude", -46.527828);
         List<String> images = new ArrayList<>();
         images.add("https://i.imgur.com/Ls8jpOim.jpg");
         images.add("https://i.imgur.com/sVqliwHm.jpg");
         report.put("imgs", images);
+        List<String> resolvedUsers = new ArrayList<>();
+        report.put("resolvedUsers", resolvedUsers);
 
         db.collection("reports").document()
                 .set(report)
