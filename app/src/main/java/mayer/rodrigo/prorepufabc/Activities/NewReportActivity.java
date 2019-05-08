@@ -3,6 +3,8 @@ package mayer.rodrigo.prorepufabc.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import mayer.rodrigo.prorepufabc.BuildConfig;
 import mayer.rodrigo.prorepufabc.R;
 
 import android.Manifest;
@@ -10,10 +12,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,7 +35,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +53,9 @@ import java.util.Map;
 
 public class NewReportActivity extends AppCompatActivity {
 
+    private final int REQUEST_IMAGE_CAPTURE = 1, REQUEST_IMAGE_FROM_GALLERY = 2;
+    private Uri currentPhotoPath;
+
     //Views
     private Button buttonAddPicture, buttonAddLocation, buttonSend;
     private TextInputLayout txtTitle, txtDescription;
@@ -44,6 +63,10 @@ public class NewReportActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
+
+    private ArrayList<Uri> imgUris = new ArrayList<>();
+    private ArrayList<String> imgUrls = new ArrayList<>();
 
     private double lat = 0, lng = 0;
 
@@ -71,6 +94,27 @@ public class NewReportActivity extends AppCompatActivity {
             }
         });
 
+        buttonAddPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(NewReportActivity.this, R.style.CustomAlertDialogTheme)
+                        .setTitle("Foto de Perfil")
+                        .setMessage("Tirar foto ou escolher da galeria?")
+                        .setPositiveButton("Tirar foto", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                takePicture();
+                            }
+                        })
+                        .setNegativeButton("Galeria de fotos", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                selectImageFromGallery();
+                            }
+                        })
+                        .show();
+            }
+        });
+
         //Lsiteners
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +130,7 @@ public class NewReportActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Novo relato");
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
     }
 
     private void send() {
@@ -97,7 +142,7 @@ public class NewReportActivity extends AppCompatActivity {
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        saveReportToDb();
+                        prepareToSaveToDb();
                     }
                 })
                 .setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -138,9 +183,9 @@ public class NewReportActivity extends AppCompatActivity {
 
     }
 
-    private void saveReportToDb() {
+    private void prepareToSaveToDb() {
 
-        final Map<String, Object> report = new HashMap<>();
+        Map<String, Object> report = new HashMap<>();
 
         report.put("user_id", auth.getCurrentUser().getUid());
         report.put("title", txtTitle.getEditText().getText().toString().trim());
@@ -151,12 +196,24 @@ public class NewReportActivity extends AppCompatActivity {
         report.put("latitude", lat);
         report.put("longitude", lng);
 
-        List<String> images = new ArrayList<>();
-        images.add("https://i.imgur.com/Ls8jpOim.jpg");
-        images.add("https://i.imgur.com/sVqliwHm.jpg");
-        report.put("imgs", images);
         List<String> resolvedUsers = new ArrayList<>();
         report.put("resolvedUsers", resolvedUsers);
+
+        //Upload images
+        for (Uri imgUri: imgUris) {
+            uploadImage(getBitmapFromUri(imgUri), report);
+        }
+
+    }
+
+    private void saveToDb(final Map<String, Object> report){
+
+        //Salva no DB apenas quando todas as imgs ja subiram para o Cloud Storage
+        if(imgUrls.size() != imgUris.size()){
+            return;
+        }
+
+        report.put("imgs", imgUrls);
 
         db.collection("reports").document()
                 .set(report)
@@ -179,10 +236,15 @@ public class NewReportActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-
     }
 
     private void sendEmail(Map<String, Object> report){
+
+        String imgsParameter = "";
+
+        for(String imgUrl: imgUrls){
+            imgsParameter += imgUrl + ",";
+        }
 
         String baseUrl = "https://us-central1-prorepufabc.cloudfunctions.net/sendMail";
 
@@ -192,6 +254,7 @@ public class NewReportActivity extends AppCompatActivity {
                 .addQueryParameter("description", (String) report.get("description"))
                 .addQueryParameter("latitude", String.valueOf(report.get("latitude")))
                 .addQueryParameter("longitude", String.valueOf(report.get("longitude")))
+                .addQueryParameter("imgs", imgsParameter)
                 .setPriority(Priority.HIGH)
                 .build().getAsString(new StringRequestListener() {
             @Override
@@ -205,5 +268,129 @@ public class NewReportActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void selectImageFromGallery(){
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Selecione uma imagem de perfil");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_FROM_GALLERY);
+    }
+
+    private void takePicture(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                currentPhotoPath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoPath);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_FROM_GALLERY && data != null && data.getData() != null) {
+                Uri imageUri = data.getData();
+                imgUris.add(imageUri);
+            }
+
+            if(requestCode == REQUEST_IMAGE_CAPTURE){
+                imgUris.add(currentPhotoPath);
+            }
+        }
+    }
+
+    private Bitmap getBitmapFromUri(Uri imageUri){
+        Bitmap image = null;
+        try {
+            image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        return image;
+    }
+
+    private void uploadImage(Bitmap image, final Map<String, Object> report){
+
+        String fileName = auth.getCurrentUser().getUid() + "_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        final StorageReference storageRef = storage.getReference().child("images").child(fileName);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        //Reduce image dimensions
+        Bitmap newImage = Bitmap.createScaledBitmap(image, image.getWidth()/3, image.getHeight()/3, true);
+
+        //Reduce image quality
+        newImage.compress(Bitmap.CompressFormat.JPEG, 35, byteArrayOutputStream);
+
+        //Upload to Storage
+        UploadTask uploadTask = storageRef.putBytes(byteArrayOutputStream.toByteArray());
+
+        //Use this to upload full size image
+        //UploadTask uploadTask = storageRef.putFile(imageUri);
+
+        image.recycle();
+        newImage.recycle();
+
+        try {
+            byteArrayOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        imgUrls.add(uri.toString());
+                        saveToDb(report);
+                    }
+                });
+            }
+        });
+
+    }
+
 
 }
