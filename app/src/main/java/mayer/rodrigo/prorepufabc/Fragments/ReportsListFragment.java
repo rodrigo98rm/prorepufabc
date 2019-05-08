@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,7 @@ public class ReportsListFragment extends Fragment {
     public static final int RECENTS = 1, POPULAR = 2, USER = 3;
     public static final String FRAGMENT_TYPE = "type";
 
+    private FirebaseAuth auth;
     private FirebaseFirestore db;
     private ArrayList<Report> reports = new ArrayList<>();
 
@@ -64,6 +66,7 @@ public class ReportsListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         //Views
         recyclerView = view.findViewById(R.id.recyclerView_ReportsFragment);
@@ -102,41 +105,67 @@ public class ReportsListFragment extends Fragment {
                 }
             });
 
-//            User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
-//            ArrayList<String> photosUrls = new ArrayList<>();
-//            photosUrls.add("https://i.imgur.com/Ls8jpOim.jpg");
-//            photosUrls.add("https://i.imgur.com/sVqliwHm.jpg");
-//            Report report = new Report(user, "Bebedouro quebrado", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 15, 1555268610000L, new ArrayList<>(photosUrls));
-//            reports.add(report);
-//
-//            photosUrls.clear();
-//            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
-//            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
-//            report = new Report(user, "Saída de emergência danificada", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 1345, 1555268610000L, new ArrayList<>(photosUrls));
-//            reports.add(report);
-
         }else if(type == POPULAR){
-            User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
-            ArrayList<String> photosUrls = new ArrayList<>();
 
-            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
-            photosUrls.add("https://i.imgur.com/iEDJJkrm.jpg");
-            Report report = new Report(user, "Saída de emergência danificada", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 1345, 1555268610000L, new ArrayList<>(photosUrls));
-            reports.add(report);
+            db.collection("reports").orderBy("upvotes", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for (final QueryDocumentSnapshot document : task.getResult()) {
 
-            photosUrls.clear();
-            photosUrls.add("https://i.imgur.com/Ls8jpOim.jpg");
-            photosUrls.add("https://i.imgur.com/sVqliwHm.jpg");
-            report = new Report(user, "Bebedouro quebrado", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 15, 1555268610000L, new ArrayList<>(photosUrls));
-            reports.add(report);
+                            //User
+                            String userId = document.getString("user_id");
+
+                            db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        User user = task.getResult().toObject(User.class);
+
+                                        Report report = document.toObject(Report.class);
+                                        report.setUser(user);
+                                        reports.add(report);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                }
+            });
+
         }else if(type == USER){
 
-            User user = new User("Rodrigo Rominho Mayer", "https://firebasestorage.googleapis.com/v0/b/prorepufabc.appspot.com/o/images%2FIz5K1w1F8AQPrwZpJBPCWwMOKQg1.jpg?alt=media&token=4f27659d-acb0-42ca-8943-29df12551307");
-            ArrayList<String> photosUrls = new ArrayList<>();
-            photosUrls.add("https://i.imgur.com/DJiE2pEm.jpg");
-            photosUrls.add("https://i.imgur.com/dG1K9JZm.jpg");
-            Report report = new Report(user, "Goteiras no piso vermelho", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 0, 1555268610000L, new ArrayList<>(photosUrls));
-            reports.add(report);
+            db.collection("reports").whereEqualTo("user_id", auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for (final QueryDocumentSnapshot document : task.getResult()) {
+
+                            //User
+                            String userId = document.getString("user_id");
+
+                            db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        User user = task.getResult().toObject(User.class);
+
+                                        Report report = document.toObject(Report.class);
+                                        report.setUser(user);
+                                        reports.add(report);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                }
+            });
+
+
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
