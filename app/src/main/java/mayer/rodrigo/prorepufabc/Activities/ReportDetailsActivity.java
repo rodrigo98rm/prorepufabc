@@ -101,7 +101,7 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
         Picasso.with(getApplicationContext()).load(report.getUser().getImgUrl()).into(imgUser);
 
         //Photos Grid View
-        ReportPhotosAdapter photosAdapter = new ReportPhotosAdapter(report.getPhotosUrls(), getApplicationContext());
+        ReportPhotosAdapter photosAdapter = new ReportPhotosAdapter(report.getImgs(), getApplicationContext());
         photosGrid.setAdapter(photosAdapter);
 
     }

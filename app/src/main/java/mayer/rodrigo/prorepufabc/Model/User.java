@@ -4,6 +4,10 @@ public class User {
 
     private String name, imgUrl;
 
+    public User(){
+
+    }
+
     public User(String name, String imgUrl) {
         this.name = name;
         this.imgUrl = imgUrl;

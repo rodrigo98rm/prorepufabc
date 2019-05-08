@@ -65,7 +65,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         txtUpvotes = holder.txtUpvotes;
         imgUser = holder.imgUser;
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY");
 
         txtTitle.setText(report.getTitle());
         txtUserName.setText(report.getUser().getName());
@@ -74,7 +74,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         Picasso.with(context).load(report.getUser().getImgUrl()).into(imgUser);
 
         //Photos Grid View
-        ReportPhotosAdapter photosAdapter = new ReportPhotosAdapter(report.getPhotosUrls(), context);
+        ReportPhotosAdapter photosAdapter = new ReportPhotosAdapter(report.getImgs(), context);
         photosGrid.setAdapter(photosAdapter);
 
         clickableBox.setOnClickListener(new View.OnClickListener() {

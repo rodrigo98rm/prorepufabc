@@ -8,16 +8,23 @@ public class Report {
     private String title, description;
     private int upvotes;
     private long timestamp;
-    private ArrayList<String> photosUrls;
+    private ArrayList<String> imgs;
 
+    public Report(){
 
-    public Report(User user, String title, String description, int upvotes, long timestamp, ArrayList<String> photosUrls) {
+    }
+
+    public Report(User user, String title, String description, int upvotes, long timestamp, ArrayList<String> imgs) {
         this.user = user;
         this.title = title;
         this.description = description;
         this.upvotes = upvotes;
         this.timestamp = timestamp;
-        this.photosUrls = photosUrls;
+        this.imgs = imgs;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public User getUser() {
@@ -40,7 +47,7 @@ public class Report {
         return timestamp;
     }
 
-    public ArrayList<String> getPhotosUrls() {
-        return photosUrls;
+    public ArrayList<String> getImgs() {
+        return imgs;
     }
 }

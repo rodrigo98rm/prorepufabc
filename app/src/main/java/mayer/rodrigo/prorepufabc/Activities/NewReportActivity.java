@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,8 @@ public class NewReportActivity extends AppCompatActivity {
         report.put("user_id", auth.getCurrentUser().getUid());
         report.put("title", txtTitle.getEditText().getText().toString().trim());
         report.put("description", txtDescription.getEditText().getText().toString().trim());
+        report.put("upvotes", 0);
+        report.put("timestamp", new Date().getTime());
         List<String> images = new ArrayList<>();
         images.add("https://i.imgur.com/Ls8jpOim.jpg");
         images.add("https://i.imgur.com/sVqliwHm.jpg");
