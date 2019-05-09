@@ -163,8 +163,8 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
 
     private void showResolvidoLayout(){
 
-        if(report.getResolvedUsers() != null){
-            if(report.getResolvedUsers().size() > 0){
+        if(resolvedUsers != null){
+            if(resolvedUsers.size() > 0){
 
                 resolvedUsers = report.getResolvedUsers();
 
@@ -224,6 +224,8 @@ public class ReportDetailsActivity extends AppCompatActivity implements OnMapRea
                                         txtUpvotes.setText(String.valueOf(upvotes));
                                         txtDescription.setText(report.getDescription());
                                         Picasso.with(getApplicationContext()).load(report.getUser().getImgUrl()).into(imgUser);
+
+                                        resolvedUsers = report.getResolvedUsers();
 
                                         showResolvidoLayout();
 

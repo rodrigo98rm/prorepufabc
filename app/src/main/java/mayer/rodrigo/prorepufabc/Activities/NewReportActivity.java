@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import mayer.rodrigo.prorepufabc.Adapters.ReportPhotosAdapter;
 import mayer.rodrigo.prorepufabc.BuildConfig;
 import mayer.rodrigo.prorepufabc.R;
 
@@ -23,6 +24,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +63,8 @@ public class NewReportActivity extends AppCompatActivity {
     private Button buttonAddPicture, buttonAddLocation, buttonSend;
     private TextInputLayout txtTitle, txtDescription;
     private TextView txtLocationLabel;
+    private LinearLayout photosEmptyView;
+    private GridView photosGrid;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
@@ -67,6 +72,8 @@ public class NewReportActivity extends AppCompatActivity {
 
     private ArrayList<Uri> imgUris = new ArrayList<>();
     private ArrayList<String> imgUrls = new ArrayList<>();
+
+    private ReportPhotosAdapter photosAdapter;
 
     private double lat = 0, lng = 0;
 
@@ -82,6 +89,8 @@ public class NewReportActivity extends AppCompatActivity {
         txtTitle = findViewById(R.id.txtLayout_title_NewReport);
         txtLocationLabel = findViewById(R.id.textView_locationMessage_NewReport);
         txtDescription = findViewById(R.id.txtLayout_description_NewReport);
+        photosEmptyView = findViewById(R.id.photosEmptyView_NewReport);
+        photosGrid = findViewById(R.id.gridView_photos_NewReport);
 
         buttonAddLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,23 +104,28 @@ public class NewReportActivity extends AppCompatActivity {
         });
 
         buttonAddPicture.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(NewReportActivity.this, R.style.CustomAlertDialogTheme)
-                        .setTitle("Foto de Perfil")
-                        .setMessage("Tirar foto ou escolher da galeria?")
-                        .setPositiveButton("Tirar foto", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                takePicture();
-                            }
-                        })
-                        .setNegativeButton("Galeria de fotos", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                selectImageFromGallery();
-                            }
-                        })
-                        .show();
+
+                if(checkCameraPermissions()){
+                    new AlertDialog.Builder(NewReportActivity.this, R.style.CustomAlertDialogTheme)
+                            .setTitle("Foto de Perfil")
+                            .setMessage("Tirar foto ou escolher da galeria?")
+                            .setPositiveButton("Tirar foto", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    takePicture();
+                                }
+                            })
+                            .setNegativeButton("Galeria de fotos", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    selectImageFromGallery();
+                                }
+                            })
+                            .show();
+                }
+
             }
         });
 
@@ -126,14 +140,35 @@ public class NewReportActivity extends AppCompatActivity {
         configure();
     }
 
+    private boolean checkCameraPermissions(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                requestPermissions(permissions, 1);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void configure() {
         getSupportActionBar().setTitle("Novo relato");
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+
+        photosAdapter = new ReportPhotosAdapter(getApplicationContext(), imgUris);
+        photosGrid.setAdapter(photosAdapter);
+        photosGrid.setEmptyView(photosEmptyView);
     }
 
     private void send() {
+
+        if(txtTitle.getEditText().getText().toString().isEmpty() || txtDescription.getEditText().getText().toString().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(NewReportActivity.this, R.style.CustomAlertDialogTheme);
 
@@ -164,7 +199,7 @@ public class NewReportActivity extends AppCompatActivity {
             }
         }
 
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         lat = location.getLatitude();
         lng = location.getLongitude();
@@ -316,6 +351,7 @@ public class NewReportActivity extends AppCompatActivity {
             if(requestCode == REQUEST_IMAGE_CAPTURE){
                 imgUris.add(currentPhotoPath);
             }
+            photosAdapter.notifyDataSetChanged();
         }
     }
 

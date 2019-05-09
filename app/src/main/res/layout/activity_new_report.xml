@@ -79,28 +79,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
                     android:text="Fotos"
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_addPicture_NewReport"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/button_addPicture_NewReport" />
 
                 <Button
                     android:id="@+id/button_addPicture_NewReport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
                     android:background="@android:color/transparent"
                     android:text="Adicionar foto"
                     android:textColor="@color/colorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/photosEmptyView_NewReport" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/photosEmptyView_NewReport"
@@ -108,13 +106,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_photosLabel_NewReport">
+                    app:layout_constraintTop_toBottomOf="@+id/button_addPicture_NewReport">
 
                     <ImageView
                         android:layout_width="150dp"
@@ -124,9 +123,29 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Nenhuma foto adicionada" />
 
                 </LinearLayout>
+
+                <GridView
+                    android:id="@+id/gridView_photos_NewReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:horizontalSpacing="2dp"
+                    android:isScrollContainer="false"
+                    android:numColumns="2"
+                    android:orientation="vertical"
+                    android:scrollbars="none"
+                    android:stretchMode="columnWidth"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/button_addPicture_NewReport">
+
+                </GridView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -157,13 +176,11 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
                     android:background="@android:color/transparent"
                     android:text="Adicionar localização"
                     android:textColor="@color/colorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/locationEmptyView_NewReport" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView_locationLabel_NewReport"
@@ -171,13 +188,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
                     android:text="Localização"
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_addLocation_NewReport"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/button_addLocation_NewReport" />
 
                 <LinearLayout
                     android:id="@+id/locationEmptyView_NewReport"
@@ -187,11 +204,13 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_locationLabel_NewReport">
+                    app:layout_constraintTop_toBottomOf="@+id/button_addLocation_NewReport">
 
                     <ImageView
                         android:layout_width="150dp"

@@ -126,7 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
                            DocumentSnapshot data = task.getResult();
                            txtName.setText(data.getString("name"));
                            txtEmail.setText(data.getString("email"));
-                           Picasso.with(getApplicationContext()).load(data.getString("imgUrl")).error(R.drawable.ufabc).into(imageViewprofilePic);
+                           Picasso.with(getApplicationContext()).load(data.getString("imgUrl")).placeholder(R.drawable.ufabc).into(imageViewprofilePic);
                        }
                    }
                });
@@ -252,7 +252,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
 
                         //Update imageview with new url
-                        Picasso.with(getApplicationContext()).load(uri).error(R.drawable.ufabc).into(imageViewprofilePic);
+                        Picasso.with(getApplicationContext()).load(uri).placeholder(R.drawable.ufabc).into(imageViewprofilePic);
 
                         //Save new img url to db
                         Map<String, Object> user = new HashMap<>();
